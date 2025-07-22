@@ -1,0 +1,36 @@
+import pyttsx3
+import speech_recognition as sr
+
+# Initialize the TTS engine
+engine = pyttsx3.init()
+
+def speak(text):
+    """Convert text to speech"""
+    engine.say(text)
+    engine.runAndWait()
+
+def listen():
+    """Convert speech to text"""
+    recognizer = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening...")
+        speak("I'm listening.")
+        recognizer.adjust_for_ambient_noise(source)
+        audio = recognizer.listen(source)
+
+    try:
+        print("Recognizing...")
+        text = recognizer.recognize_google(audio)
+        print("You said:", text)
+        return text
+    except sr.UnknownValueError:
+        speak("Sorry, I didn't understand that.")
+    except sr.RequestError:
+        speak("Sorry, I'm having trouble connecting to the speech service.")
+    return ""
+
+# Example usage
+speak("Hello! Say something and I will repeat it.")
+user_input = listen()
+if user_input:
+    speak(f"You said: {user_input}")
